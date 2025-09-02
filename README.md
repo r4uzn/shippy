@@ -1,1 +1,1 @@
-# shippy
+# Shippy (쉬피)
