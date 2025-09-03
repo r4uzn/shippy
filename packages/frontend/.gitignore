@@ -23,5 +23,16 @@ dist-ssr
 *.sln
 *.sw?
 
-# Envs
+# Env
 .env
+.env.local
+.env.production
+.env.development
+
+# Build
+dist/
+coverage/
+
+# DB / ORM
+.prisma/
+*.sqlite
