@@ -1,11 +1,7 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from 'vue'
 import LoginModal from './LoginModal.vue'
 import SignupModal from './SignupModal.vue'
-
-// 모달 상태 관리
-const showLoginModal = ref(false)
-const showSignupModal = ref(false)
 
 // 인기 프로젝트 샘플 데이터
 const popularProjects = ref([
