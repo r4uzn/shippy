@@ -9,6 +9,8 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@types/axios": "^0.9.36",
+    "axios": "^1.12.2",
     "vue": "^3.5.18"
   },
   "devDependencies": {
@@ -16,6 +18,7 @@
     "@vue/tsconfig": "^0.7.0",
     "typescript": "~5.8.3",
     "vite": "^7.1.2",
+    "vue-router": "^4.5.1",
     "vue-tsc": "^3.0.5"
   }
 }

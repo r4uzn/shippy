@@ -1,10 +1,5 @@
-node_modules
-/dist
+# Backend-specific ignores
 
 # Keep environment variables out of version control
+# The root .gitignore already handles .env, but this is for clarity.
 .env
-
-/generated/prisma
-/prisma/migrations
-
-todo.list
