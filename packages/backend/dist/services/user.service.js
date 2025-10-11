@@ -28,6 +28,8 @@ export const getAppliedProjectsByUserId = async (userId) => {
                             id: true,
                             email: true,
                             name: true,
+                            personality: true,
+                            status: true,
                         }
                     }
                 }
@@ -37,5 +39,33 @@ export const getAppliedProjectsByUserId = async (userId) => {
             createdAt: 'desc' // 최신 지원 순으로 정렬
         }
     });
+};
+/**
+ * 사용자의 성격 정보를 업데이트합니다.
+ * @param {number} userId - 사용자 ID
+ * @param {string} personality - 새로운 성격 정보
+ * @returns {Promise<Omit<User, 'password'> | null>}
+ */
+export const updateUserPersonality = async (userId, personality) => {
+    const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: { personality },
+    });
+    const { password, ...userWithoutPassword } = updatedUser;
+    return userWithoutPassword;
+};
+/**
+ * 사용자의 상태 정보를 업데이트합니다.
+ * @param {number} userId - 사용자 ID
+ * @param {string} status - 새로운 상태 정보
+ * @returns {Promise<Omit<User, 'password'> | null>}
+ */
+export const updateUserStatus = async (userId, status) => {
+    const updatedUser = await prisma.user.update({
+        where: { id: userId },
+        data: { status },
+    });
+    const { password, ...userWithoutPassword } = updatedUser;
+    return userWithoutPassword;
 };
 //# sourceMappingURL=user.service.js.map

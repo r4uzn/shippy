@@ -13,8 +13,27 @@ export const createProject = async (data: Prisma.ProjectCreateInput): Promise<Pr
 /**
  * 모든 프로젝트 목록을 조회합니다.
  */
-export const getProjects = async (): Promise<Project[]> => {
+export const getProjects = async (filters: {
+  techStack?: string[];
+  positions?: string[];
+  progressMethod?: string;
+}): Promise<Project[]> => {
+  const where: Prisma.ProjectWhereInput = {};
+
+  if (filters.techStack && filters.techStack.length > 0) {
+    where.techStack = { hasSome: filters.techStack };
+  }
+
+  if (filters.positions && filters.positions.length > 0) {
+    where.positions = { hasSome: filters.positions };
+  }
+
+  if (filters.progressMethod) {
+    where.progressMethod = { equals: filters.progressMethod };
+  }
+
   return prisma.project.findMany({
+    where,
     include: { owner: { select: { id: true, email: true, name: true } } }, // 소유자 정보 포함
     orderBy: { id: 'desc' }, // 최신순으로 정렬
   });
@@ -75,6 +94,38 @@ export const applyToProject = async ({ projectId, userId }: { projectId: number;
     data: {
       projectId,
       userId,
+    },
+  });
+};
+
+/**
+ * 프로젝트 지원자 목록을 조회합니다. (프로젝트 소유자만 가능)
+ * @param {number} projectId - 프로젝트 ID
+ * @param {number} currentUserId - 현재 로그인한 사용자 ID
+ */
+export const getProjectApplicants = async (projectId: number, currentUserId: number) => {
+  const project = await prisma.project.findUnique({ where: { id: projectId } });
+
+  if (!project) {
+    throw new ApiError(httpStatus.NOT_FOUND, '프로젝트를 찾을 수 없습니다.');
+  }
+
+  if (project.ownerId !== currentUserId) {
+    throw new ApiError(httpStatus.FORBIDDEN, '지원자 목록을 볼 권한이 없습니다.');
+  }
+
+  return prisma.application.findMany({
+    where: { projectId },
+    include: {
+      user: {
+        select: {
+          id: true,
+          name: true,
+          email: true,
+          personality: true,
+          status: true,
+        },
+      },
     },
   });
 };

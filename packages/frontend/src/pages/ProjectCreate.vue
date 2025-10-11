@@ -15,6 +15,17 @@
         <input type="text" id="techStack" v-model="techStackInput">
       </div>
       <div class="form-group">
+        <label for="positions">모집 포지션 (쉼표로 구분)</label>
+        <input type="text" id="positions" v-model="positionsInput">
+      </div>
+      <div class="form-group">
+        <label for="progressMethod">진행 방식</label>
+        <select id="progressMethod" v-model="project.progressMethod">
+          <option value="online">온라인</option>
+          <option value="offline">오프라인</option>
+        </select>
+      </div>
+      <div class="form-group">
         <label for="members">모집 인원</label>
         <input type="text" id="members" v-model="project.members" required>
       </div>
@@ -38,11 +49,14 @@ const project = ref({
   title: '',
   description: '',
   techStack: [],
+  positions: [],
+  progressMethod: 'online', // 기본값 설정
   members: '',
   deadline: ''
 });
 
 const techStackInput = ref('');
+const positionsInput = ref('');
 
 const submitProject = async () => {
   try {
@@ -52,6 +66,7 @@ const submitProject = async () => {
     const projectData = {
       ...project.value,
       techStack: techStackInput.value.split(',').map(item => item.trim()),
+      positions: positionsInput.value.split(',').map(item => item.trim()),
       deadline: deadlineISO,
     };
 

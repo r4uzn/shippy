@@ -19,4 +19,12 @@ export declare const getProjectById: (req: Request, res: Response, next: NextFun
  * 프로젝트에 지원
  */
 export declare const applyToProject: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+/**
+ * 프로젝트 댓글 조회
+ */
+export declare const getComments: (req: Request, res: Response, next: NextFunction) => Promise<void>;
+/**
+ * 프로젝트 지원자 목록 조회
+ */
+export declare const getProjectApplicants: (req: Request, res: Response, next: NextFunction) => Promise<void>;
 //# sourceMappingURL=project.controller.d.ts.map

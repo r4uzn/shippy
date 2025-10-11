@@ -6,7 +6,11 @@ export declare const createProject: (data: Prisma.ProjectCreateInput) => Promise
 /**
  * 모든 프로젝트 목록을 조회합니다.
  */
-export declare const getProjects: () => Promise<Project[]>;
+export declare const getProjects: (filters: {
+    techStack?: string[];
+    positions?: string[];
+    progressMethod?: string;
+}) => Promise<Project[]>;
 /**
  * 인기 프로젝트(최신 3개) 목록을 조회합니다.
  */
@@ -28,6 +32,25 @@ export declare const applyToProject: ({ projectId, userId }: {
     projectId: number;
     userId: number;
 }) => Promise<Application>;
+/**
+ * 프로젝트 지원자 목록을 조회합니다. (프로젝트 소유자만 가능)
+ * @param {number} projectId - 프로젝트 ID
+ * @param {number} currentUserId - 현재 로그인한 사용자 ID
+ */
+export declare const getProjectApplicants: (projectId: number, currentUserId: number) => Promise<({
+    user: {
+        name: string | null;
+        id: number;
+        email: string;
+        personality: string | null;
+        status: string | null;
+    };
+} & {
+    id: number;
+    projectId: number;
+    userId: number;
+    createdAt: Date;
+})[]>;
 /**
  * 코사인 유사도 기반 매칭 알고리즘 (Placeholder)
  */

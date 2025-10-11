@@ -10,7 +10,7 @@ const showLoginModal = ref(false)
 const showSignupModal = ref(false)
 
 // Use auth composable
-const { isAuthenticated, clearAuth } = useAuth()
+const { isAuthenticated, user, clearAuth } = useAuth()
 
 // Open/close/switch modals
 const openLoginModal = () => {
@@ -75,6 +75,10 @@ const handleLogout = () => {
         <!-- 로그인 상태일 때 -->
         <template v-else>
           <router-link to="/my-applications" class="nav-link my-applications-link">내 지원 목록</router-link>
+          <router-link to="/profile" class="nav-link my-profile-link">
+            내 프로필
+            <span v-if="user" :class="['status-indicator', user.status]"></span>
+          </router-link>
           <button class="btn-logout" @click="handleLogout">로그아웃</button>
         </template>
       </div>
@@ -97,5 +101,38 @@ const handleLogout = () => {
 .my-applications-link:hover {
   background-color: #f0f0f0;
 }
+
+.my-profile-link {
+  text-decoration: none;
+  color: #333;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.my-profile-link:hover {
+  background-color: #f0f0f0;
+}
+
+.status-indicator {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  margin-left: 5px;
+}
+
+.status-indicator.온라인 {
+  background-color: #28a745; /* green */
+}
+
+.status-indicator.오프라인 {
+  background-color: #6c757d; /* grey */
+}
+
+.status-indicator.다른-용무-중 {
+  background-color: #ffc107; /* yellow */
+}
+
 /* navbar 관련 스타일 (App.vue에서 잘라내어 붙여넣기) */
 </style>

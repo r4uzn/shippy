@@ -60,3 +60,37 @@ export const getMyApplications = async (req: Request, res: Response, next: NextF
         next(error);
     }
 };
+
+/**
+ * 현재 로그인한 사용자의 성격 정보 업데이트하기
+ */
+export const updateMyPersonality = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user = req.user as User;
+        if (!user) {
+            throw new ApiError(httpStatus.UNAUTHORIZED, 'Authentication required');
+        }
+        const { personality } = req.body;
+        const updatedUser = await userService.updateUserPersonality(user.id, personality);
+        res.status(httpStatus.OK).json(updatedUser);
+    } catch (error) {
+        next(error);
+    }
+};
+
+/**
+ * 현재 로그인한 사용자의 상태 정보 업데이트하기
+ */
+export const updateMyStatus = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const user = req.user as User;
+        if (!user) {
+            throw new ApiError(httpStatus.UNAUTHORIZED, 'Authentication required');
+        }
+        const { status } = req.body;
+        const updatedUser = await userService.updateUserStatus(user.id, status);
+        res.status(httpStatus.OK).json(updatedUser);
+    } catch (error) {
+        next(error);
+    }
+};
