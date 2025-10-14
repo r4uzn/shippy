@@ -39,3 +39,4 @@ body {
   padding-top: 80px; /* 네비게이션바 높이만큼 패딩 추가 */
 }
 </style>
+
