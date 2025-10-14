@@ -62,7 +62,7 @@ const teams = ref<any[]>([]);
 const loadingTeams = ref(true);
 const selectedProjectId = ref<number | null>(null);
 
-// 🚨 [수정] 메시지 배열의 타입을 통일합니다.
+// [수정] 메시지 배열의 타입을 통일합니다.
 const messages = ref<Array<{ content: string; sender: string }>>([]);
 const inputMessage = ref('');
 const socket = io('http://localhost:3000'); 
@@ -111,7 +111,7 @@ const fetchTeams = async () => {
 
 
 // --- 채팅 로직 ---
-// 🚨 [수정] API에서 메시지를 불러와서 통일된 형식으로 변환합니다.
+// [수정] API에서 메시지를 불러와서 통일된 형식으로 변환합니다.
 const fetchMessages = async (projectId: number) => {
     try {
         const token = localStorage.getItem('token');
@@ -185,7 +185,7 @@ onMounted(() => {
       console.log('Socket.IO 연결 해제됨.');
   });
   
-  // 🚨 [수정] 백엔드에서 받은 메시지를 통일된 형식으로 변환합니다.
+  // [수정] 백엔드에서 받은 메시지를 통일된 형식으로 변환합니다.
   socket.on('chat:message', (payload) => {
     if (payload.roomId === String(selectedProjectId.value)) {
         // [수정] API 데이터와 동일한 형식으로 변환
@@ -377,4 +377,4 @@ onMounted(() => {
     opacity: 0.7;
     cursor: not-allowed;
 }
-</style>
+</style>a
