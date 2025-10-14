@@ -53,7 +53,8 @@ const handleLogout = () => {
         <router-link to="/" class="nav-logo">SHIPPY</router-link>
         <div class="nav-menu">
           <router-link to="/projects" class="nav-link">프로젝트</router-link>
-        </div>
+          <router-link v-if="isAuthenticated" to="/team-room" class="nav-link chat-link">팀룸</router-link>
+          </div>
       </div>
 
       <div class="nav-center">

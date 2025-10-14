@@ -12,6 +12,7 @@
   "dependencies": {
     "@types/axios": "^0.9.36",
     "axios": "^1.12.2",
+    "socket.io-client": "^4.8.1",
     "vue": "^3.5.18"
   },
   "devDependencies": {

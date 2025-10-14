@@ -13,9 +13,9 @@ const app = express();
 // --- 1. 전역 미들웨어 설정 ---
 
 // CORS(Cross-Origin Resource Sharing)를 활성화합니다.
-// 프론트엔드(e.g., http://localhost:5173)에서의 요청을 허용합니다.
+// 프론트엔드에서의 요청을 허용합니다.
 app.use(cors({
-  origin: 'http://localhost:5173', // 실제 프론트엔드 주소에 맞게 수정하세요.
+  origin: true, // 모든 origin 허용 (개발 환경용)
   credentials: true,
 }));
 
@@ -28,7 +28,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-// --- 2. API 라우트 연결 ---
+// --- 2. 요청 로깅 미들웨어 ---
+app.use((req, res, next) => {
+  console.log(`📥 ${req.method} ${req.path}`);
+  next();
+});
+
+// --- 3. API 라우트 연결 ---
 
 // '/api' 경로로 들어오는 모든 요청을 apiRoutes에서 처리하도록 위임합니다.
 app.use('/api', apiRoutes);
@@ -38,6 +44,7 @@ app.use('/api', apiRoutes);
 
 // 위에서 정의된 라우트 중 어느 것과도 일치하지 않는 요청이 들어왔을 때 404 에러를 생성합니다.
 app.use((req, res, next) => {
+  console.log(`❌ 404 Not Found: ${req.method} ${req.path}`);
   next(new ApiError(httpStatus.NOT_FOUND, 'API를 찾을 수 없습니다.'));
 });
 

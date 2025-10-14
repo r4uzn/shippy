@@ -1,3 +1,5 @@
+// packages/backend/src/sockets/index.ts (채팅 작동을 위한 최종 코드)
+
 import { Server, Socket } from 'socket.io';
 import http from 'http';
 import chatHandler from './chat.handler.js';
@@ -7,7 +9,8 @@ import logger from '../utils/logger.js';
 export const initializeSocket = (server: http.Server) => {
   const io = new Server(server, {
     cors: {
-      origin: '*', // 실제 프로덕션 환경에서는 프론트엔드 주소로 제한해야 합니다.
+      // 🚨 [수정] 프론트엔드 주소(localhost:5173)를 명시적으로 지정하여 CORS 문제 해결
+      origin: 'http://localhost:5173',
       methods: ['GET', 'POST'],
     },
   });
@@ -24,4 +27,3 @@ export const initializeSocket = (server: http.Server) => {
     });
   });
 };
-

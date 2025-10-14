@@ -1,0 +1,20 @@
+warning: in the working copy of 'package-lock.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'packages/backend/package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'packages/backend/src/app.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'packages/backend/src/main.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'packages/backend/src/sockets/chat.handler.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'packages/backend/src/sockets/index.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'packages/frontend/package.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'packages/frontend/src/components/Navbar.vue', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'packages/frontend/src/router/index.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'packages/frontend/vite.config.ts', LF will be replaced by CRLF the next time Git touches it
+package-lock.json
+packages/backend/package.json
+packages/backend/src/app.ts
+packages/backend/src/main.ts
+packages/backend/src/sockets/chat.handler.ts
+packages/backend/src/sockets/index.ts
+packages/frontend/package.json
+packages/frontend/src/components/Navbar.vue
+packages/frontend/src/router/index.ts
+packages/frontend/vite.config.ts
