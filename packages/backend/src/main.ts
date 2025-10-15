@@ -29,7 +29,7 @@ app.listen(3000, () => {
 }); */
 import express from 'express';
 
-import chatController from './controllers/chat.controller.js';
+import * as chatController from './controllers/chat.controller.js';
 
 // 1. Node.js 기본 모듈과 설치한 라이브러리를 가져옵니다.
 import http from 'http'; // Socket.IO 연동을 위해 Express 앱을 감쌀 HTTP 서버가 필요합니다.
