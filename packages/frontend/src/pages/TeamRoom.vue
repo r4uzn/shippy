@@ -639,6 +639,12 @@ const toggleVideo = () => {
     if (videoTrack) {
         videoTrack.enabled = !videoTrack.enabled;
         isVideoOn.value = videoTrack.enabled;
+
+        // [FIX] 비디오가 켜질 때, 일부 브라우저에서 렌더링이 시작되지 않는 문제를 해결하기 위해
+        // srcObject를 다시 할당하여 비디오 요소가 스트림을 새로 인식하도록 합니다.
+        if (videoTrack.enabled && localVideoRef.value) {
+            localVideoRef.value.srcObject = localStream;
+        }
     }
 };
 
