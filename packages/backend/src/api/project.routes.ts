@@ -1,12 +1,12 @@
 import { Router } from 'express';
 import * as projectController from '../controllers/project.controller.js';
 import * as commentController from '../controllers/comment.controller.js';
-import * as chatController from '../controllers/chat.controller.js';// [추가] chatController 임포트
+import * as chatController from '../controllers/chat.controller.js';
+import * as sharedNoteController from '../controllers/sharedNote.controller.js'; // 👈 [추가]
 import { authenticate } from '../middlewares/auth.middleware.js';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated.middleware.js';
 
 const router = Router();
-
 // 인기 프로젝트 목록 조회
 router.get('/popular', projectController.getPopularProjects);
 
@@ -34,5 +34,11 @@ router.get('/:projectId/messages', ensureAuthenticated, chatController.getMessag
 
 // Get applicants for a project
 router.get('/:id/applications', ensureAuthenticated, projectController.getProjectApplicants);
+
+// [추가] 채팅 메시지 기록 조회 라우트
+router.get('/:projectId/messages', ensureAuthenticated, chatController.getMessages);
+
+// [추가] 공유 노트 조회 라우트
+router.get('/:projectId/note', ensureAuthenticated, sharedNoteController.getNote); // 👈 [추가]
 
 export default router;

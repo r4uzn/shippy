@@ -4,6 +4,7 @@ import { Server, Socket } from 'socket.io';
 import http from 'http';
 import chatHandler from './chat.handler.js';
 import webrtcHandler from './webrtc.handler.js';
+import noteHandler from './note.handler.js';
 import logger from '../utils/logger.js';
 
 export const initializeSocket = (server: http.Server) => {
@@ -21,6 +22,7 @@ export const initializeSocket = (server: http.Server) => {
     // 네임스페이스나 룸을 사용하여 핸들러를 분리할 수 있습니다.
     chatHandler(io, socket);
     webrtcHandler(io, socket);
+    noteHandler(io, socket);
 
     socket.on('disconnect', () => {
       logger.info(`❌ 소켓 연결 해제: ${socket.id}`);

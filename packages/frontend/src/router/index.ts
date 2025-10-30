@@ -16,7 +16,11 @@ const routes = [
   { path: '/my-applications', component: MyApplications }, // 내 지원 목록
   { path: '/profile', component: Profile }, // 내 프로필
   { path: '/users/:id', component: UserProfile }, // 다른 사용자 프로필
-  { path: '/team-room', component: TeamRoom }, // 팀룸
+  {
+    path: '/team-room', // 팀룸
+    component: TeamRoom,
+    meta: { fullWidth: true }
+  }
 ]
 
 export const router = createRouter({
