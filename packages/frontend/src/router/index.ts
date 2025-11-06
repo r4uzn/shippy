@@ -7,6 +7,7 @@ import MyApplications from '../pages/MyApplications.vue' // 추가
 import Profile from '../pages/Profile.vue'
 import UserProfile from '../pages/UserProfile.vue'
 import TeamRoom from '../pages/TeamRoom.vue'
+import Recommended from '../pages/Recommended.vue'
 
 const routes = [
   { path: '/', component: Home },

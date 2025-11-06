@@ -1,3 +1,5 @@
+// packages/backend/src/services/user.service.ts
+
 import { User, Application, Project } from '@prisma/client';
 import prisma from '../config/prisma.js';
 
@@ -42,6 +44,27 @@ export const getAppliedProjectsByUserId = async (userId: number): Promise<(Appli
       createdAt: 'desc' // 최신 지원 순으로 정렬
     }
   });
+};
+
+/**
+ * 사용자의 자기소개서 및 추출된 기술 스킬을 업데이트합니다.
+ * @param {number} userId - 사용자 ID
+ * @param {string} bio - 자기소개서 내용
+ * @param {string[]} skills - LLM이 추출한 기술 스킬 목록
+ * @returns {Promise<Omit<User, 'password'> | null>}
+ */
+export const updateUserBioAndSkills = async (userId: number, bio: string, skills: string[]): Promise<Omit<User, 'password'> | null> => {
+  const updatedUser = await prisma.user.update({
+    where: { id: userId },
+    data: {
+      bio,
+      technicalSkills: skills,
+    },
+  });
+
+  // 비밀번호 필드를 제거하고 반환
+  const { password, ...userWithoutPassword } = updatedUser;
+  return userWithoutPassword;
 };
 
 /**

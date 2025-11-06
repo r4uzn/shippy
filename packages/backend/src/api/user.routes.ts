@@ -1,3 +1,5 @@
+// packages/backend/src/api/user.routes.ts
+
 import express from 'express';
 import * as userController from '../controllers/user.controller.js';
 import { ensureAuthenticated } from '../middlewares/ensureAuthenticated.middleware.js';
@@ -16,8 +18,12 @@ router.put('/me/personality', ensureAuthenticated, userController.updateMyPerson
 // '/api/users/me/status' - 현재 로그인된 사용자의 상태 정보 업데이트하기 (인증 필요)
 router.put('/me/status', ensureAuthenticated, userController.updateMyStatus);
 
+// '/api/users/me/bio' - 자기소개 업데이트 및 스킬 추출 (인증 필수)
+router.put('/me/bio', ensureAuthenticated, userController.updateMyBio);
+
+router.get('/me/recommendations', ensureAuthenticated, userController.getRecommendedProjects);
+
 // '/api/users/:userId' - 특정 사용자 정보 가져오기
 router.get('/:userId', userController.getUserById);
 
 export default router;
-

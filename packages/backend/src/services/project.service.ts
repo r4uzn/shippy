@@ -1,7 +1,11 @@
+// packages/backend/src/services/project.service.ts
+
 import type { Project, Prisma, Application } from '@prisma/client';
 import prisma from '../config/prisma.js';
 import ApiError from '../utils/ApiError.js';
 import httpStatus from 'http-status';
+import { calculateMatchScore } from '../utils/matching.utils.js';
+import type { User } from '@prisma/client'; // User 타입 임포트
 
 /**
  * 새로운 프로젝트를 생성합니다.
@@ -76,8 +80,6 @@ export const getProjectById = async (id: number, userId?: number): Promise<Proje
 
 /**
  * 프로젝트에 지원합니다.
- * @param {object} data - projectId와 userId를 포함하는 객체
- * @returns {Promise<Application>}
  */
 export const applyToProject = async ({ projectId, userId }: { projectId: number; userId: number }): Promise<Application> => {
   // 이미 지원했는지 확인
@@ -100,8 +102,6 @@ export const applyToProject = async ({ projectId, userId }: { projectId: number;
 
 /**
  * 프로젝트 지원자 목록을 조회합니다. (프로젝트 소유자만 가능)
- * @param {number} projectId - 프로젝트 ID
- * @param {number} currentUserId - 현재 로그인한 사용자 ID
  */
 export const getProjectApplicants = async (projectId: number, currentUserId: number) => {
   const project = await prisma.project.findUnique({ where: { id: projectId } });
@@ -128,6 +128,63 @@ export const getProjectApplicants = async (projectId: number, currentUserId: num
       },
     },
   });
+};
+
+/**
+ * 사용자 스킬 기반 프로젝트 추천 목록을 조회합니다. (코사인 유사도 적용)
+ * @param {number} userId - 현재 로그인한 사용자 ID
+ */
+export const getRecommendedProjects = async (userId: number): Promise<Project[]> => {
+  // 1. 현재 사용자 정보 (스킬 포함) 조회
+  // select에 id를 포함하여 타입스크립트 추론 오류를 해결합니다.
+  const user = await prisma.user.findUnique({
+    where: { id: userId },
+    select: {
+      id: true,
+      technicalSkills: true
+    },
+  });
+
+  // 조회 결과가 없거나 스킬이 없을 경우 처리
+  if (!user || !user.technicalSkills || user.technicalSkills.length === 0) {
+    // 스킬 정보가 없으면 최신 프로젝트 5개를 반환
+    return prisma.project.findMany({
+      take: 5,
+      include: { owner: { select: { id: true, email: true, name: true } } }, // 오너 정보 포함
+      orderBy: { id: 'desc' }
+    });
+  }
+
+  // 2. 모든 프로젝트의 기본 정보 조회 (오너 정보 포함)
+  // include를 사용하여 모든 스칼라 필드와 관계 필드를 가져옵니다.
+  const allProjects = await prisma.project.findMany({
+    include: {
+      owner: {
+        select: { id: true, email: true, name: true }
+      }
+    }
+  }) as Array<Project & { owner: Pick<User, 'id' | 'email' | 'name'> }>; // 타입 캐스팅
+
+  // 3. 매칭 점수 계산
+  const projectsWithScore = allProjects
+    .map(project => {
+      // 프로젝트의 techStack(요구 스킬)과 사용자의 technicalSkills(보유 스킬)를 비교
+      const score = calculateMatchScore(user.technicalSkills, project.techStack);
+
+      return {
+        ...project,
+        matchScore: score,
+      };
+    })
+    .filter(project => project.matchScore > 0); // 점수가 0보다 큰 프로젝트만 필터링
+
+  // 4. 점수를 기준으로 내림차순 정렬 (높은 점수 우선)
+  const sortedProjects = projectsWithScore
+    .sort((a, b) => b.matchScore - a.matchScore)
+    .slice(0, 5); // 상위 5개만 반환
+
+  // Prisma 타입 호환성을 위해 matchScore 필드 제거 후 Project 타입으로 캐스팅하여 반환합니다.
+  return sortedProjects.map(({ matchScore, ...project }) => project as Project);
 };
 
 
