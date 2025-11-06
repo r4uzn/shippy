@@ -1,3 +1,5 @@
+// packages/backend/src/controllers/project.controller.ts
+
 import type { Request, Response, NextFunction } from 'express';
 import * as projectService from '../services/project.service.js';
 import * as commentService from '../services/comment.service.js';
@@ -25,6 +27,8 @@ export const createProject = async (req: Request, res: Response, next: NextFunct
 export const getProjects = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { techStack, positions, progressMethod } = req.query;
+    // NOTE: getProjectsWithScore와 같은 함수가 projectService에 추가되어야 합니다.
+    // 현재는 일반 목록 조회 기능이므로 필터링만 처리합니다.
 
     const filters: {
       techStack?: string[];

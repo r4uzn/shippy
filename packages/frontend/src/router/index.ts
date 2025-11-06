@@ -21,7 +21,8 @@ const routes = [
     path: '/team-room', // 팀룸
     component: TeamRoom,
     meta: { fullWidth: true }
-  }
+  },
+  { path: '/recommended', component: Recommended },
 ]
 
 export const router = createRouter({

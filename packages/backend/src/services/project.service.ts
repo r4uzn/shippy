@@ -136,7 +136,6 @@ export const getProjectApplicants = async (projectId: number, currentUserId: num
  */
 export const getRecommendedProjects = async (userId: number): Promise<Project[]> => {
   // 1. 현재 사용자 정보 (스킬 포함) 조회
-  // select에 id를 포함하여 타입스크립트 추론 오류를 해결합니다.
   const user = await prisma.user.findUnique({
     where: { id: userId },
     select: {
@@ -145,30 +144,28 @@ export const getRecommendedProjects = async (userId: number): Promise<Project[]>
     },
   });
 
-  // 조회 결과가 없거나 스킬이 없을 경우 처리
+  // 🚨 [수정] 스킬 정보가 없거나 비어있는 경우
   if (!user || !user.technicalSkills || user.technicalSkills.length === 0) {
-    // 스킬 정보가 없으면 최신 프로젝트 5개를 반환
+    // 스킬 정보가 없으면 최신 프로젝트 5개를 반환 (오너 정보 포함 필수)
     return prisma.project.findMany({
       take: 5,
-      include: { owner: { select: { id: true, email: true, name: true } } }, // 오너 정보 포함
+      include: { owner: { select: { id: true, email: true, name: true } } },
       orderBy: { id: 'desc' }
-    });
+    }) as Promise<Project[]>;
   }
 
   // 2. 모든 프로젝트의 기본 정보 조회 (오너 정보 포함)
-  // include를 사용하여 모든 스칼라 필드와 관계 필드를 가져옵니다.
   const allProjects = await prisma.project.findMany({
     include: {
       owner: {
         select: { id: true, email: true, name: true }
       }
     }
-  }) as Array<Project & { owner: Pick<User, 'id' | 'email' | 'name'> }>; // 타입 캐스팅
+  }) as Array<Project & { owner: Pick<User, 'id' | 'email' | 'name'> }>;
 
   // 3. 매칭 점수 계산
   const projectsWithScore = allProjects
     .map(project => {
-      // 프로젝트의 techStack(요구 스킬)과 사용자의 technicalSkills(보유 스킬)를 비교
       const score = calculateMatchScore(user.technicalSkills, project.techStack);
 
       return {
@@ -176,14 +173,16 @@ export const getRecommendedProjects = async (userId: number): Promise<Project[]>
         matchScore: score,
       };
     })
-    .filter(project => project.matchScore > 0); // 점수가 0보다 큰 프로젝트만 필터링
+  // 🚨 [수정] 0점 필터링을 임시 해제합니다. (데이터가 프런트엔드에 전달되는지 확인하기 위함)
+  // .filter(project => project.matchScore > 0); 
+
 
   // 4. 점수를 기준으로 내림차순 정렬 (높은 점수 우선)
   const sortedProjects = projectsWithScore
     .sort((a, b) => b.matchScore - a.matchScore)
     .slice(0, 5); // 상위 5개만 반환
 
-  // Prisma 타입 호환성을 위해 matchScore 필드 제거 후 Project 타입으로 캐스팅하여 반환합니다.
+  // 반환 시 matchScore 필드 제거
   return sortedProjects.map(({ matchScore, ...project }) => project as Project);
 };
 
